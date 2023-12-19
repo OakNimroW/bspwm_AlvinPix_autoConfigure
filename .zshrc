@@ -1,3 +1,8 @@
+# TO-DO List
+if [ -f /home/oaknimrow/TODO-List.txt -a -f /opt/Shell-TODO-List/shell-TODO-List.sh -a -x /opt/Shell-TODO-List/shell-TODO-List.sh ]; then
+    source /opt/Shell-TODO-List/shell-TODO-List.sh
+fi
+
 # ~/.zshrc file for zsh interactive shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
 
@@ -11,6 +16,13 @@ setopt numericglobsort     # sort filenames numerically when it makes sense
 setopt promptsubst         # enable command substitution in prompt
 
 WORDCHARS=${WORDCHARS//\/} # Don't consider certain characters part of the word
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # hide EOL sign ('%')
 PROMPT_EOL_MARK=""
@@ -29,24 +41,181 @@ bindkey '^[[H' beginning-of-line                  # home
 bindkey '^[[F' end-of-line                        # end
 bindkey '^[[Z' undo                               # shift + tab undo last action
 
-# enable completion features
+
+# Fix the Java Problem (Burpsuite)
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# Prompt
+PROMPT="%F{red}┌[%f%F{cyan}%m%f%F{red}]─[%f%F{yellow}%D{%H:%M-%d/%m}%f%F{red}]─[%f%F{magenta}%d%f%F{red}]%f"$'\n'"%F{red}└╼%f%F{green}$USER%f%F{yellow}$%f"
+# Export PATH$
+export PATH=~/.local/bin:/snap/bin:/usr/sandbox/:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/usr/share/games:/usr/local/sbin:/usr/sbin:/sbin:/opt/nvim-linux64/bin:/opt/mdcat:/opt/ffuf:~/.local/bin:/usr/share/john:$PATH
+
+# Export TERM
+export TERM=kitty
+
+function hex-encode()
+{
+  echo "$@" | xxd -p
+}
+
+function hex-decode()
+{
+  echo "$@" | xxd -p -r
+}
+
+function rot13()
+{
+  echo "$@" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+}
+
+function settarget(){
+    ip_address=$1
+    machine_name=$2
+    echo "$ip_address $machine_name" > /home/oaknimrow/.config/bin/target
+}
+
+function cleartarget(){
+    echo '' > /home/oaknimrow/.config/bin/target
+}
+
+# Custom Functions
+function mkd () {
+  mkdir {nmap,content,exploits}
+}
+
+function extractPorts () {
+  ports="$(cat $1 | grep -oP '\d{1,5}/open' | awk '{print $1}' FS='/' | xargs | tr ' ' ',')"
+  ip_address="$(cat $1 | grep -oP '^Host: .* \(\)' | head -n 1 | awk '{print $2}' )"
+  echo -e "\n[*] Extracting Information...\n" > extractPorts.tmp
+  echo -e "\t[*] IP Address: $ip_address" >> extractPorts.tmp
+  echo -e "\t[*] Open $ports\n" >> extractPorts.tmp
+  echo -n $ports | xclip -sel clip
+  echo -e "[*] Ports copied to clipboard\n" >> extractPorts.tmp
+  cat extractPorts.tmp
+  rm extractPorts.tmp
+}
+
+function mkj () {
+  if [ $# -eq 1 ]
+  then
+    dir="$1"
+    echo "[+] Java Project: $dir"
+    mkdir {"./${dir}/bin","./${dir}/libs","./${dir}/src"} -p
+    cd $dir
+  else
+    echo "[!] Provide a name for the proyect."
+    echo -e "[+] Example. \n\tmkj projectName "
+  fi
+}
+
+function blth_connect () {
+  if [ $# -ne 1 ]
+  then
+    echo "[!] Parametros ingresados erroneamente."
+    echo "[*] Ejemplo de uso: blth_connect MAC_Address"
+  else 
+    bluetoothctl disconnect $1
+    echo "[+] BlueTooth Disconnected."
+    bluetoothctl connect $1
+    echo "[+] BlueTooth Connected."
+  fi
+}
+
+function compress_and_encrypt () {
+  if [ $# -ne 2 ]
+  then
+    echo "[!] Error."
+    echo -e "\tUsage: $0 <Compressed Name File> <Folder To Compress>"
+    echo -e "Example: $0 OakNimroW oaknimrow"
+  else 
+    compressFileName="./$(date +"%Y-%m-%d")-${1}.tgz"
+    folderNameToCompress="./$2"
+    encryptFileName="./${compressFileName}.gpg"
+    echo "[+] Folder To Compress: $folderNameToCompress"
+    echo "[+] Encrypted File: $compressFileName\n"
+
+    echo "[+] Compress File."
+
+    tar -czf $compressFileName $folderNameToCompress
+
+    echo "[+] Encrypt File."
+
+    gpg --output $encryptFileName --symmetric $compressFileName
+
+    rm $compressFileName
+
+    echo -e "[+] Encripted File :D. Bye Bye!!"
+
+  fi
+}
+
+# alias
+alias ls='ls -lh --color=auto'
+alias dir='dir --color=auto'
+alias vdir='vdir --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+
+# Custom Aliases
+# -----------------------------------------------
+# batcat
+alias cat='batcat'
+alias catn='batcat --style=plain'
+alias catnp='batcat --style=plain --paging=never'
+ 
+# ls
+alias ll='lsd -lh --group-dirs=first'
+alias la='lsd -a --group-dirs=first'
+alias l='lsd --group-dirs=first'
+alias lla='lsd -lha --group-dirs=first'
+alias ls='lsd --group-dirs=first'
+
+#####################################################
+# Auto completion / suggestion
+# Mixing zsh-autocomplete and zsh-autosuggestions
+# Requires: zsh-autocomplete (custom packaging by Parrot Team)
+# Jobs: suggest files / foldername / histsory bellow the prompt
+# Requires: zsh-autosuggestions (packaging by Debian Team)
+# Jobs: Fish-like suggestion for command history
+if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+fi
+
+##################################################
+# Fish like syntax highlighting
+# Requires "zsh-syntax-highlighting" from apt
+if [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+
+if [ -f /usr/share/zsh-sudo/sudo.plugin.zsh ]; then
+	source /usr/share/zsh-sudo/sudo.plugin.zsh
+fi
+
+# Use modern completion system
 autoload -Uz compinit
-compinit -d ~/.cache/zcompdump
-zstyle ':completion:*:*:*:*:*' menu select
+compinit
+
 zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete
+zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*' rehash true
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
 zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
-# History configurations
+# Save type history for completion and easier life
 HISTFILE=~/.zsh_history
 HISTSIZE=1000
 SAVEHIST=1000
@@ -54,6 +223,7 @@ setopt hist_expire_dups_first # delete duplicates first when HISTFILE size excee
 setopt hist_ignore_dups       # ignore duplicated commands history list
 setopt hist_ignore_space      # ignore commands that start with space
 setopt hist_verify            # show command with history expansion to user before running it
+setopt histignorealldups sharehistory
 #setopt share_history         # share command history data
 
 # force zsh to show the complete history
@@ -359,3 +529,9 @@ bash /home/${user}/scripts/shell-color-scripts/colorscript.sh -r
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
+

@@ -127,6 +127,7 @@ if [ $quest = Y ]; then
 		sudo rm -rf ${LOCALPATH}/.fonts
 		cp -r .fonts ${LOCALPATH}
 		sudo cp -r .fonts /usr/share/fonts
+		rm -rf ${LOCALPATH}/.fonts
 		echo -e "${White} [${Blue}+${White}] Installed fonts"
 		sleep 2
 		echo ""
@@ -295,8 +296,6 @@ if [ $quest = Y ]; then
 		chmod +x ${LOCALPATH}/.config/polybar/launch.sh
 		chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/checkupdates
                 chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/color-switch.sh
-                chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/colors-dark.sh
-                chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/colors-light.sh
                 chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/launcher.sh
                 chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/powermenu.sh
                 chmod +x ${LOCALPATH}/.config/polybar/cuts/scripts/pywal.sh
@@ -312,73 +311,22 @@ if [ $quest = Y ]; then
 		cd ${RUTE}
 		cp -r .themes ${LOCALPATH}
 		chmod +x ${LOCALPATH}/.themes/Camila/bspwmrc		#8
-		chmod +x ${LOCALPATH}/.themes/Esmeralda/bspwmrc		#7
-		chmod +x ${LOCALPATH}/.themes/Nami/bspwmrc		#6
-		chmod +x ${LOCALPATH}/.themes/Raven/bspwmrc		#5
-		chmod +x ${LOCALPATH}/.themes/Ryan/bspwmrc		#4
-		chmod +x ${LOCALPATH}/.themes/Simon/bspwmrc		#3
-		chmod +x ${LOCALPATH}/.themes/Xavier/bspwmrc		#2
-		chmod +x ${LOCALPATH}/.themes/Zenitsu/bspwmrc		#1
 		echo ""
 		echo -e "${White} [${Blue}+${White}] Installing theme ${Red}Camila"
 		sleep 2
 		chmod +x ${LOCALPATH}/.themes/Camila/scripts/ethernet_status.sh
 		chmod +x ${LOCALPATH}/.themes/Camila/scripts/machine_target.sh
 		chmod +x ${LOCALPATH}/.themes/Camila/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme ${Cyan}Esmeralda"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Esmeralda/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Esmeralda/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Esmeralda/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme ${Black}Nami"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Nami/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Nami/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Nami/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme ${Purple}Raven"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Raven/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Raven/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Raven/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme ${Green}Ryan"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Ryan/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Ryan/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Ryan/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme ${Blue}Simon"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Simon/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Simon/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Simon/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme Xavier"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Xavier/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Xavier/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Xavier/scripts/vpn_status.sh
-		echo -e "${White} [${Blue}+${White}] Installing theme ${Yellow}Zenitsu"
-		sleep 2
-		chmod +x ${LOCALPATH}/.themes/Zenitsu/scripts/ethernet_status.sh
-                chmod +x ${LOCALPATH}/.themes/Zenitsu/scripts/machine_target.sh
-                chmod +x ${LOCALPATH}/.themes/Zenitsu/scripts/vpn_status.sh
 		echo ""
 		echo -e "${White} [${Blue}i${White}] Step 11 installing bspwm scripts"
 		sleep 2
 		cd ${RUTE}
 		cp -r scripts ${LOCALPATH}
-		chmod +x ${LOCALPATH}/scripts/Theaming.sh
-		chmod +x ${LOCALPATH}/scripts/colorscript.sh
 		chmod +x ${LOCALPATH}/scripts/rezise.sh
 		chmod +x ${LOCALPATH}/scripts/updates.sh
 		chmod +x ${LOCALPATH}/scripts/volume.sh
 		chmod +x ${LOCALPATH}/scripts/wifi.sh
 		chmod +x ${LOCALPATH}/scripts/wall-scripts/camila_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/esmeralda_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/nami_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/raven_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/ryan_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/simon_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/xavier_wal.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/zenitsu_wal.sh
 		echo ""
 		echo -e "${White} [${Blue}i${White}] Step 12 Installing the powerlevel10k, fzf, sudo-plugin, and others for the normal user"
 		sleep 2
@@ -390,27 +338,9 @@ if [ $quest = Y ]; then
 		echo ""
 		cd ; git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
 		echo ""
-		cd ${LOCALPATH}/scripts ; git clone https://github.com/charitarthchugh/shell-color-scripts.git
-		echo ""
-		sudo rm -rf ${LOCALPATH}/scripts/shell-color-scripts/colorscripts
-		sudo rm -rf ${LOCALPATH}/scripts/shell-color-scripts/colorscript.sh
-		cd ${LOCALPATH}/scripts
-		mv colorscripts colorscript.sh ${LOCALPATH}/scripts/shell-color-scripts
-		chmod +x ${LOCALPATH}/scripts/shell-color-scripts/colorscript.sh
-		cd ${LOCALPATH}/scripts/shell-color-scripts/colorscripts
-		chmod +x *
 		cd
 		git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
 		~/.fzf/install
-		echo ""
-		cd ${LOCALPATH}/scripts ; git clone https://github.com/pipeseroni/pipes.sh.git
-		echo ""
-		echo -e "${White} [${Blue}i${White}] Step 13 clone ghostscript and falcón repositories"
-		sleep 2
-		echo ""
-		cd ${LOCALPATH}/scripts ; git clone https://github.com/AlvinPix/Ghost-script.git
-		echo ""
-		cd ${LOCALPATH}/scripts ; git clone https://github.com/AlvinPix/Falcon.git
 		echo ""
 fi
 }
