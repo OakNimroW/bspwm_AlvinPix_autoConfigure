@@ -322,11 +322,6 @@ if [ $quest = Y ]; then
 		sleep 2
 		cd ${RUTE}
 		cp -r scripts ${LOCALPATH}
-		chmod +x ${LOCALPATH}/scripts/rezise.sh
-		chmod +x ${LOCALPATH}/scripts/updates.sh
-		chmod +x ${LOCALPATH}/scripts/volume.sh
-		chmod +x ${LOCALPATH}/scripts/wifi.sh
-		chmod +x ${LOCALPATH}/scripts/wall-scripts/camila_wal.sh
 		echo ""
 		echo -e "${White} [${Blue}i${White}] Step 12 Installing the powerlevel10k, fzf, sudo-plugin, and others for the normal user"
 		sleep 2
